@@ -1,6 +1,5 @@
 const path = require('path');
 const express = require('express');
-const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const session = require('express-session');
@@ -30,10 +29,6 @@ app.use(cors({
   // put your origin url here
   //origin: ['http://localhost:3000']
 }));
-
-// Routes Response Listener
-app.use(morgan('combined'));
-
 
 // Body Parser Init
 app.use(bodyParser.json());
