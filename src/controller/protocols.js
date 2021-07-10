@@ -32,8 +32,8 @@ exports.getTodaysTvl = (req, res) => {
     let currDate = new Date();
     let yesterday = new Date();
     yesterday.setDate(currDate.getDate() - 1);
-    yesterday=yesterday.toLocaleDateString()
-    currDate=currDate.toLocaleDateString();
+    yesterday=yesterday.toLocaleDateString("en-US")
+    currDate=currDate.toLocaleDateString("en-US");
     axios.get("https://api.llama.fi/charts")
         .then(response => {
             response.data.forEach(protocol => {
@@ -45,6 +45,7 @@ exports.getTodaysTvl = (req, res) => {
                         "date": prize_date,
                         "totalLiquidityUSD": protocol.totalLiquidityUSD
                     })
+                    return;
                 }else if(date===yesterday){
                     todaysTvl.push({
                         "date": prize_date,
