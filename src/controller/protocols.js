@@ -40,12 +40,8 @@ exports.getTodaysTvl = (req, res) => {
                 let date = new Date(protocol.date * 1000)
                 date=date.toLocaleDateString();
                 let prize_date = new Date(protocol.date * 1000).toLocaleString();
+                console.log(prize_date)
                 if (date ===currDate) {
-                    todaysTvl.push({
-                        "date": prize_date,
-                        "totalLiquidityUSD": protocol.totalLiquidityUSD
-                    })
-                }else if(date===yesterday){
                     todaysTvl.push({
                         "date": prize_date,
                         "totalLiquidityUSD": protocol.totalLiquidityUSD
