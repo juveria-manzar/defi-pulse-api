@@ -28,23 +28,28 @@ exports.getProtocols = (req, res) => {
 };
 
 exports.getTodaysTvl = (req, res) => {
+    let todaysTvl=[]
+    let currDate = new Date();
+    let yesterday = new Date();
+    yesterday.setDate(currDate.getDate() - 1);
+    yesterday=yesterday.toLocaleDateString()
+    currDate=currDate.toLocaleDateString();
     axios.get("https://api.llama.fi/charts")
         .then(response => {
-            let todaysTvl;
-            // let currDate= + new Date()
-            // console.log(currDate.toLocaleString())
-            let currDate = new Date().toLocaleString();
-            console.log(currDate.getDate() +"/" + (currDate.getMonth() + 1) +"/" + currDate.getFullYear())
             response.data.forEach(protocol => {
-                let date = new Date(protocol.date * 1000).toLocaleString();
-                // let money = MoneyFormat(protocol.totalLiquidityUSD)
-                // money = parseFloat(money).toPrecision(2) + money.replace(/[^B|M|K]/g, "")
-                if (date == currDate) {
+                let date = new Date(protocol.date * 1000)
+                date=date.toLocaleDateString();
+                let prize_date = new Date(protocol.date * 1000).toLocaleString();
+                if (date ===currDate) {
                     todaysTvl.push({
-                        "date": date,
+                        "date": prize_date,
                         "totalLiquidityUSD": protocol.totalLiquidityUSD
                     })
-                    console.log(todaysTvl)
+                }else if(date===yesterday){
+                    todaysTvl.push({
+                        "date": prize_date,
+                        "totalLiquidityUSD": protocol.totalLiquidityUSD
+                    })
                 }
             })
             res.send(todaysTvl);
