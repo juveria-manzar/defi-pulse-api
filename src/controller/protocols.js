@@ -38,7 +38,7 @@ exports.getTodaysTvl = (req, res) => {
         .then(response => {
             response.data.forEach(protocol => {
                 let date = new Date(protocol.date * 1000)
-                date=date.toLocaleDateString();
+                date=date.toLocaleDateString("en-US");
                 let prize_date = new Date(protocol.date * 1000).toLocaleString("en-US");
                 if (date ===currDate) {
                     todaysTvl.push({
