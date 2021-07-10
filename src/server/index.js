@@ -10,7 +10,8 @@ const protocols = require("../routes/protocol");
 const app = express();
 
 // Server Init
-const HTTP_SERVER = 8080;
+
+const HTTP_SERVER = process.env.PORT || 8080;
 app.listen(HTTP_SERVER, () => {
   console.log(`server listening on port ${HTTP_SERVER}!`);
 });
