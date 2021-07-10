@@ -45,7 +45,6 @@ exports.getTodaysTvl = (req, res) => {
                         "date": prize_date,
                         "totalLiquidityUSD": protocol.totalLiquidityUSD
                     })
-                    break;
                 }else if(date===yesterday){
                     todaysTvl.push({
                         "date": prize_date,
