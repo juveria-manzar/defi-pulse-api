@@ -17,6 +17,7 @@
     "cors": "*",
     "dotenv": "*",
     "express": "*",
-    "express-session": "*"
+    "express-session": "*",
+    "node-fetch": "^2.6.1"
   }
 }

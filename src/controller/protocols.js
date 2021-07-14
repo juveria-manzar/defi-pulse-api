@@ -1,8 +1,74 @@
 const axios = require('axios');
-const { response } = require('../server');
+const fetch = require('node-fetch');
+let responseObj = []
 
+//1Day Change included
+exports.getProtocolsAllInfo = async (req, res) => {
+    const protocols = await fetch('https://api.llama.fi/protocols')
+        .then(response => response.json());
+    let tvlPromises = [];
+    protocols.forEach(protocol => {
+        let formattedTVL = parseFloat(protocol.tvl).toPrecision(2)
+        formattedTVL = MoneyFormat(formattedTVL)
+        responseObj[protocol.id] = {
+            "id": protocol.id,
+            "name": protocol.name,
+            "chain": protocol.chain,
+            "category": protocol.category,
+            "tvl": formattedTVL
+        }
+        let pName = protocol.name
+        let pcall = pName.toLowerCase()
+        if (pcall.includes(" ")) {
+            pcall = pcall.replace(" ", "-")
+        }
+        tvlPromises.push(
+            fetch(`https://api.llama.fi/protocol/${pcall}`)
+                .then(response => response.json())
+                .then(tvlChange => {
+                    // console.log(tvlChange)
+                    let formattedTVL = parseFloat(protocol.tvl).toPrecision(2)
+                    formattedTVL = MoneyFormat(formattedTVL)
+                    return {
+                        id: protocol.id,
+                        name: protocol.name,
+                        chain: protocol.chain,
+                        category: protocol.category,
+                        tvl: formattedTVL,
+                        tvlChange: tvlChange
+                    }
+                })
+        );
+    })
+    
+    console.log(responseObj)
+    for await (let everyTvl of tvlPromises) {
+        if (everyTvl.tvl !== undefined) {
+            let tvl = everyTvl.tvlChange.tvl;
+            if (everyTvl.tvlChange.name === undefined) {
+                continue;
+            }
+            if (tvl.length != 1 || tvl.length != 0) {
+                tvl = tvl.slice(Math.max(tvl.length - 2, 0))
+                if (tvl[1] === undefined) {
+                    let changeInTvl = "0" + "%"
+                    let obj = { "changeInTvl": changeInTvl + "" }
+                    Object.assign(responseObj[everyTvl.id], obj)
+                } else {
+                    let changeInTvl = ((tvl[1].totalLiquidityUSD - tvl[0].totalLiquidityUSD) / tvl[0].totalLiquidityUSD) * 100;
+                    changeInTvl = Math.round((changeInTvl + Number.EPSILON) * 100) / 100
+                    changeInTvl += "%";
+                    let obj = { "changeInTvl": changeInTvl + "" }
+                    // let protocol = append(responseObj[p.id], obj)
+                    Object.assign(responseObj[everyTvl.id], obj)
+                }
+            }
 
-//TODO add % percentage chnge
+        }
+    }
+    await res.send(responseObj)
+};
+
 exports.getProtocols = (req, res) => {
     axios.get('https://api.llama.fi/protocols')
         .then(response => {
@@ -27,38 +93,8 @@ exports.getProtocols = (req, res) => {
         });
 };
 
-exports.getTodaysTvl = (req, res) => {
-    let todaysTvl=[]
-    let currDate = new Date();
-    let yesterday = new Date();
-    yesterday.setDate(currDate.getDate() - 1);
-    yesterday=yesterday.toLocaleDateString("en-US")
-    currDate=currDate.toLocaleDateString("en-US");
-    axios.get("https://api.llama.fi/charts")
-        .then(response => {
-            response.data.forEach(protocol => {
-                let date = new Date(protocol.date * 1000)
-                date=date.toLocaleDateString("en-US");
-                let prize_date = new Date(protocol.date * 1000).toLocaleString("en-US");
-                if (date ===currDate) {
-                    todaysTvl.push({
-                        "date": prize_date,
-                        "totalLiquidityUSD": protocol.totalLiquidityUSD
-                    })
-                }else if(date===yesterday){
-                    todaysTvl.push({
-                        "date": prize_date,
-                        "totalLiquidityUSD": protocol.totalLiquidityUSD
-                    })
-                }
-            })
-            res.send(todaysTvl);
-        })
-};
-
 exports.getProtocolByName = (req, res) => {
     const { protocolName } = req.params;
-    console.log(protocolName)
     axios.get(`https://api.llama.fi/protocol/${protocolName}`)
         .then(response => {
             res.send(response.data);
