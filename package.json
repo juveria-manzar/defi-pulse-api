@@ -13,9 +13,13 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bcrypt": "*",
+    "bitcoin-price-by-date": "^0.2.0",
     "body-parser": "*",
+    "btc-value": "^3.1.0",
     "cors": "*",
+    "crypto-price": "0.0.6",
     "dotenv": "*",
+    "eth-price": "^0.1.5",
     "express": "*",
     "express-session": "*",
     "node-fetch": "^2.6.1"

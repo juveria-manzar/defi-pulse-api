@@ -1,5 +1,7 @@
 const axios = require('axios');
 const fetch = require('node-fetch');
+const ethPrice = require('eth-price');
+let price = require('crypto-price')
 let responseObj = []
 
 //1Day Change included
@@ -40,8 +42,6 @@ exports.getProtocolsAllInfo = async (req, res) => {
                 })
         );
     })
-    
-    console.log(responseObj)
     for await (let everyTvl of tvlPromises) {
         if (everyTvl.tvl !== undefined) {
             let tvl = everyTvl.tvlChange.tvl;
@@ -151,4 +151,14 @@ exports.getProtocolTVL = (req, res) => {
         .catch(error => {
             console.log(error);
         });
+}
+
+exports.getCurrVal = async (req, res) => {
+
+    let btcPrice= await price.getCryptoPrice('USD', 'BTC')
+    let ethPrice= await price.getCryptoPrice('USD', 'ETH')
+
+    btcPrice=btcPrice.price;
+    ethPrice=ethPrice.price
+    res.json({btcPrice,ethPrice})
 }
