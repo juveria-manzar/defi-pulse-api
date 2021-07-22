@@ -5,6 +5,7 @@ const cors = require('cors');
 const session = require('express-session');
 
 const protocols = require("../routes/protocol");
+const lendings = require("../routes/lending");
 
 // Start Express
 const app = express();
@@ -40,15 +41,8 @@ app.get('/', (req,res)=>{
   res.send('I am working!')
 })
 
-// const users = require('../endpoints/protocols.js');
-
 // Requiring Endpoints
 app.use('/', protocols);
-
-// //front end routes
-// app.use((req, res) => {
-//   res.sendFile(path.join(__dirname, '../../client/build/index.html'));
-// });
-
+app.use('/lendings', lendings);
 
 module.exports = app;
