@@ -51,7 +51,7 @@ exports.getLendingHistoryByLength = (req, res) => {
 }
 
 exports.getInterestRates = (req, res) => {
-    axios.get(`https://data-api.defipulse.com/api/v1/defipulse/api/GetRates?api-key=98222f0967f5b22bfd34571d0790b2cdfcfbd7d1348c10bc0f101d976a11?`)
+    axios.get(`https://data-api.defipulse.com/api/v1/defipulse/api/GetRates?api-key=98222f0967f5b22bfd34571d0790b2cdfcfbd7d1348c10bc0f101d976a11`)
         .then(rates => {
             res.status(200).json(rates.data)
         }).catch(error => {
