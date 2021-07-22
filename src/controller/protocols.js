@@ -1,6 +1,5 @@
 const axios = require('axios');
 const fetch = require('node-fetch');
-const ethPrice = require('eth-price');
 let price = require('crypto-price')
 let responseObj = []
 
